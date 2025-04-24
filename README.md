@@ -1,3 +1,5 @@
+# In Active Development
+
 # Tide’s End
 
 Tide’s End is a modern digital booking platform designed for seamless reservations at a beachfront campground. It streamlines the booking process with user-friendly interfaces and efficient management tools, letting guests easily plan and secure their perfect seaside getaway.
