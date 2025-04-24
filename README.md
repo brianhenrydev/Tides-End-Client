@@ -44,6 +44,9 @@ If you’re planning on running a local instance for development or testing, fol
    ```
    The application should now be available at [http://localhost:3000](http://localhost:3000)
 
+   **Setup API**
+   [Tide's End API](https://github.com/brianhenrydev/Tides-End-API)
+
 
 ## This app was built with:
     - Frontend: TypeScript/Next.js
