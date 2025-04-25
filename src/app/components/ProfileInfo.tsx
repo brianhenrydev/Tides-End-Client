@@ -1,4 +1,4 @@
-export default function ProfileInfo({profile,setEditButtonClicked}) {
+export default function ProfileInfo({profile,editing}) {
  return (
    
             <div className="w-full max-w-lg rounded-lg bg-white p-6 text-gray-800 shadow-md">
@@ -18,7 +18,7 @@ export default function ProfileInfo({profile,setEditButtonClicked}) {
                         <p><span className="font-medium text-gray-600">Phone Number:</span> {profile.phone_number}</p>
                     </div>
                 </div>
-                <button onClick={setEditButtonClicked} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
+                <button onClick={editing} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
                 Edit
               </button>
             </div>

@@ -49,7 +49,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex items-center justify-between bg-gray-800 px-4 py-2 text-white">
+    <div className="mb-2 flex items-center justify-between bg-gray-800 px-4 py-2 text-white">
       {/* Site Title */}
       <div className="text-xl font-bold">
         <Link href="/">Tide's End</Link>

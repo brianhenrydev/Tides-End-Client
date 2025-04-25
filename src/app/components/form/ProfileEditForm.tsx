@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FormInput from "../FormInput";
 
-const ProfileEditForm = ({profile,setEditButtonClicked}) => {
+const ProfileEditForm = ({profile,editing}) => {
     const [tempProfile,editProfile] = useState({
         "username": profile.user?.username,
         "email": profile.user?.email,
@@ -65,7 +65,7 @@ const ProfileEditForm = ({profile,setEditButtonClicked}) => {
                         />
                     </div>
                 </div>
-                <button onClick={setEditButtonClicked} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
+                <button onClick={editing} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
                 Save
               </button>
             </div>

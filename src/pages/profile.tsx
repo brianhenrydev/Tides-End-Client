@@ -1,4 +1,4 @@
-
+//src/pages/profile.tsx
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAppContext } from '@/context/AppContext';
@@ -6,6 +6,7 @@ import apiRequest from '@/lib/axios';
 import Navbar from '@/app/components/Navbar';
 import ProfileInfo from '@/app/components/ProfileInfo';
 import ProfileEditForm from '@/app/components/form/ProfileEditForm';
+import { usePathname } from 'next/navigation';
 
   
 
@@ -22,9 +23,9 @@ interface Profile {
     phone_number: string;
     
 }
-const getProfile= async ( ) => {
-  const token = localStorage.getItem("token")
-  const {data: profile} = await apiRequest.get('auth/profile',{
+const getProfile= async ( ): Promise<Profile> => {
+  const token: string|null = localStorage.getItem("token")
+  const {data: profile} = await apiRequest.get<Profile>('auth/profile',{
     headers:{
       Authorization: `token ${token}`
     }
@@ -33,21 +34,24 @@ const getProfile= async ( ) => {
 }
 
 const Profile: React.FC = () => {
-    const [isEditing, setIsEditing] = useState(false)
+    const [isEditing, setIsEditing] = useState<boolean>(false)
     const { token } = useAppContext() as { token: string };
-    const { data: profile, isLoading, isError } = useQuery({
+  const pathname: string = usePathname();
+
+    const { data: profile, isLoading, isError } = useQuery<Profile>({
         queryKey: ['profile', token],
         queryFn: getProfile,
         enabled: !!token, // Only fetch if token exists
         onError: () => {
-          const authRoutes = ['/login', '/register'];
-          if (!authRoutes.includes(router.pathname)) {
+          if (!['/login', '/register'].includes(pathname)) {
             window.alert("There has been an issue retrieving your user profile.");
           }
         }
       });
         
-
+  const editingFalse = () => {
+    setIsEditing(false)
+  }
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -61,9 +65,10 @@ const Profile: React.FC = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
          <div className="flex w-full max-w-6xl flex-wrap justify-center gap-8 lg:flex-nowrap lg:justify-between">
         {isEditing ? (
-       <ProfileEditForm profile={profile} setEditButtonClicked={()=> setIsEditing(true)} /> 
+       <ProfileEditForm profile={profile} editing={editingFalse} /> 
         ):( 
-        <ProfileInfo profile={profile} setEditButtonClicked={()=> setIsEditing(false)} />
+        <ProfileInfo profile={profile} editing={() => {setIsEditing(true)}
+} />
     )
     }
             </div>
@@ -72,7 +77,7 @@ const Profile: React.FC = () => {
 }
 };
 
-Profile.getLayout = function getLayout(page) {
+Profile.getLayout = function getLayout(page: React.ReactNode) {
     return (
         <div className='flex min-h-screen flex-col'>
             <Navbar />
