@@ -1,15 +1,16 @@
 "use client"
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import apiRequest from '@/lib/axios';
 
 // Creates our context object.
-const AppContext = createContext({});
+const AppContext = createContext();
 
 export function AppWrapper({ children }) {
   const [profile, setProfile] = useState({});
   const [token, setToken] = useState("");
   const router = useRouter();
+  const pathname = usePathname()
 
   // Useful for when a window is closed and a user opens a new session, still logged in
   useEffect(() => {
@@ -24,7 +25,7 @@ export function AppWrapper({ children }) {
       try {
         const response = await apiRequest.get('auth/profile', {
           headers: {
-            Authorization: `Token ${token}` // Note the space after "Token"
+            Authorization: `Token${token}` // Note the space after "Token"
           },
         });
         return response.data;
@@ -38,7 +39,7 @@ export function AppWrapper({ children }) {
     
     // If token exists, then check the current route.
     if (token) {
-      if (authRoutes.includes(router.pathname)) {
+      if (authRoutes.includes(pathname)) {
         setProfile({});
       } else {
         // Fetch the profile for protected routes.
@@ -51,7 +52,7 @@ export function AppWrapper({ children }) {
     } else {
       setProfile({});
     }
-  }, [token, router.pathname]);
+  }, [token, pathname]);
 
   return (
     // The value prop stores functions and variables in context object. 
@@ -63,6 +64,6 @@ export function AppWrapper({ children }) {
 
 // Encapsulates React hook, useContext, and context object in a custom hook
 export function useAppContext() {
-  return useContext(AppContext);
+  return useContext(AppContext)
 }
 
