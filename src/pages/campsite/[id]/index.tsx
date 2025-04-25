@@ -31,9 +31,11 @@ const SiteDetails: React.FC = () => {
         reviews: Review[];
     }
 
-    const [formData, setFormData] = useState<{ arrival_date: string | null; depart_date: string | null }>({
-        arrival_date: null,
-        depart_date: null,
+    const [formData, setFormData] = useState<{ check_in_date: string | null; check_out_date: string | null;number_of_guests: number | null }>({
+        check_in_date: null,
+        check_out_date: null,
+        number_of_guests: null
+    
     });
 
     const { data, isLoading, isError } = useQuery({
@@ -60,7 +62,7 @@ const SiteDetails: React.FC = () => {
         const { name, description, location, price_per_night, max_occupancy, available, images, reviews } = campsite;
 
         return (
-<div className='flex h-screen flex-col'>
+<div className='flex h-full flex-col'>
   <div className='flex flex-col gap-2.5 lg:flex-row'>
     <div className="flex-1/3 rounded-lg border border-gray-300 bg-white p-8 shadow-lg">
       <h3 className="mb-4 text-2xl font-semibold text-gray-800">Select Your Dates</h3>
@@ -117,7 +119,7 @@ const SiteDetails: React.FC = () => {
 
 
 SiteDetails.getLayout = function getLayout(page) {
-  return (
+return (
           <div className='flex min-h-screen flex-col'>
             <Navbar />
             <main className='flex-grow'>{page}</main>

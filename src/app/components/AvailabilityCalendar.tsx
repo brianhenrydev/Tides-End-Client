@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppContext } from "../../context/AppContext";
 import apiRequest from "../../lib/axios";
 
@@ -9,10 +9,21 @@ interface DateInfo {
   day_number: number;
 }
 
+interface FormData {
+  check_in_date: string;
+  check_out_date: string;
+  number_of_guests: number;
+}
+
 interface AvailabilityCalendarProps {
   siteId: string;
-  formData: { arrival_date: string | null; depart_date: string | null };
-  setFormData: Dispatch<SetStateAction<{ arrival_date: string | null; depart_date: string | null }>>;
+  formData: FormData;
+  setFormData: Dispatch<
+    SetStateAction<{
+      check_in_date: string | null;
+      check_out_date: string | null;
+    }>
+  >;
 }
 
 const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
@@ -21,19 +32,60 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   setFormData,
 }) => {
   const { token } = useAppContext() as { token: string };
-  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1); // Current month (1-based)
-  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // Current year
+  const queryClient = useQueryClient();
+  const date = new Date();
+  const [timeData, setTimeData] = useState({
+    thisMonth: date.getMonth() + 1,
+    thisYear: date.getFullYear(),
+    selectedMonth: date.getMonth() + 1,
+    selectedYear: date.getFullYear(),
+    today: date,
+  });
 
-  const today = new Date(); // Today's date
-  const todayMonth = today.getMonth() + 1; // Current month (1-based)
-  const todayYear = today.getFullYear(); // Current year
+  // Reservation mutation using TanStack Query's useMutation
+  const reservationMutation = useMutation({
+    mutationFn: async () => {
+      // Ensure both dates are picked before making a reservation
+      if (!formData.check_in_date || !formData.check_out_date) {
+        throw new Error("Please select check-in and check-out dates.");
+      }
 
-  const { data: dates, isLoading, isError } = useQuery<DateInfo[]>({
-    queryKey: ["dates", token, currentMonth, currentYear],
+      apiRequest.defaults.headers.common["Authorization"] = `Token ${token}`;
+      const payload = {
+        check_in_date: formData.check_in_date,
+        check_out_date: formData.check_out_date,
+        number_of_guests: formData.number_of_guests
+      };
+
+      // Adjust the endpoint URL according to your API design
+      const response = await apiRequest.post(`/campsites/${siteId}/reserve`, payload);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      window.alert("Reservation successful!");
+      // Optionally reset the dates on success
+      setFormData({ check_in_date: null, check_out_date: null });
+      
+      // Invalidate any queries related to available dates/reservations to refresh data.
+      queryClient.invalidateQueries(["dates", token, timeData.selectedMonth, timeData.selectedYear]);
+    },
+    onError: (error: any) => {
+      window.alert(
+        error?.response?.data?.message || "There has been an error making your reservation."
+      );
+    },
+  });
+
+  const makeReservation = () => {
+    reservationMutation.mutate();
+  };
+
+  const { data: dates, isLoading } = useQuery<DateInfo[]>({
+    queryKey: ["dates", token, timeData.selectedMonth, timeData.selectedYear],
     queryFn: async () => {
-      apiRequest.defaults.headers.common["Authorization"] = `Token${token}`;
+      apiRequest.defaults.headers.common["Authorization"] = `Token ${token}`;
       const { data: dates } = await apiRequest.get(
-        `/campsites/${siteId}/availability?month=${currentMonth}&year=${currentYear}`
+        `/campsites/${siteId}/availability?month=${timeData.selectedMonth}&year=${timeData.selectedYear}`
       );
       return dates;
     },
@@ -44,34 +96,48 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   });
 
   const handleDateClick = (date: string) => {
-    if (!formData.arrival_date) {
+    if (!formData.check_in_date) {
       // Set the start date if none is selected
-      setFormData({ ...formData, arrival_date: date });
+      setFormData((prev) => ({ ...prev, check_in_date: date }));
     } else {
       // Set the end date and ensure the dates are in order
-      if (new Date(date) < new Date(formData.arrival_date)) {
-        setFormData({ arrival_date: date, depart_date: formData.arrival_date });
+      if (new Date(date) < new Date(formData.check_in_date)) {
+        setFormData({ check_in_date: date, check_out_date: formData.check_in_date });
       } else {
-        setFormData({ ...formData, depart_date: date });
+        setFormData({ ...formData, check_out_date: date });
       }
     }
   };
 
   const handlePreviousMonth = () => {
-    if (currentMonth === 1) {
-      setCurrentMonth(12);
-      setCurrentYear((prevYear) => prevYear - 1);
+    const { selectedMonth } = timeData;
+    if (selectedMonth === 1) {
+      setTimeData((prev) => ({
+        ...prev,
+        selectedMonth: 12,
+        selectedYear: prev.selectedYear - 1,
+      }));
     } else {
-      setCurrentMonth((prevMonth) => prevMonth - 1);
+      setTimeData((prev) => ({
+        ...prev,
+        selectedMonth: prev.selectedMonth - 1,
+      }));
     }
   };
 
   const handleNextMonth = () => {
-    if (currentMonth === 12) {
-      setCurrentMonth(1);
-      setCurrentYear((prevYear) => prevYear + 1);
+    const { selectedMonth } = timeData;
+    if (selectedMonth === 12) {
+      setTimeData((prev) => ({
+        ...prev,
+        selectedMonth: 1,
+        selectedYear: prev.selectedYear + 1,
+      }));
     } else {
-      setCurrentMonth((prevMonth) => prevMonth + 1);
+      setTimeData((prev) => ({
+        ...prev,
+        selectedMonth: prev.selectedMonth + 1,
+      }));
     }
   };
 
@@ -85,15 +151,19 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
         <button
           className="rounded bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-gray-300"
           onClick={handlePreviousMonth}
-          disabled={currentYear === todayYear && currentMonth === todayMonth} // Disable if on the current month
+          disabled={
+            timeData.selectedYear === timeData.thisYear &&
+            timeData.selectedMonth === timeData.thisMonth
+          }
         >
           Previous
         </button>
         <h2 className="text-lg font-semibold">
-          {new Date(currentYear, currentMonth - 1).toLocaleString("default", {
+          {new Date(timeData.selectedYear, timeData.selectedMonth - 1).toLocaleString("default", {
             month: "long",
-          })}{""}
-          {currentYear}
+          })}
+          {", "}
+          {timeData.selectedYear}
         </h2>
         <button
           className="rounded bg-blue-500 px-4 py-2 text-white"
@@ -105,60 +175,61 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       {dates ? (
         <>
           <div className="grid grid-cols-7 gap-2">
-            {dates.map((date) => {
+            {dates.map((dateInfo) => {
               const isSelected =
-                formData.arrival_date === date.date || formData.depart_date === date.date; // Check if the date is the start or end date
+                formData.check_in_date === dateInfo.date ||
+                formData.check_out_date === dateInfo.date; // Check if the date is the start or end date
               const isInRange =
-                formData.arrival_date &&
-                formData.depart_date &&
-                new Date(date.date) > new Date(formData.arrival_date) &&
-                new Date(date.date) < new Date(formData.depart_date); // Check if the date is within the range
+                formData.check_in_date &&
+                formData.check_out_date &&
+                new Date(dateInfo.date) > new Date(formData.check_in_date) &&
+                new Date(dateInfo.date) < new Date(formData.check_out_date); // Check if the date is within the range
 
               return (
                 <button
-                  key={date.date}
+                  key={dateInfo.date}
                   className={`flex h-12 w-12 items-center justify-center ${
                     isSelected
-                      ? " bg-blue-500"
+                      ? "bg-blue-500"
                       : isInRange
                       ? "bg-blue-300"
-                      : date.available
+                      : dateInfo.available
                       ? "bg-green-500"
                       : "bg-gray-300"
                   } rounded`}
-                  aria-label={`${date.date}-${
-                    date.available ? "available" : "not available"
+                  aria-label={`${dateInfo.date}-${
+                    dateInfo.available ? "available" : "not available"
                   }`}
-                  title={`${date.date}-${
-                    date.available ? "available" : "not available"
+                  title={`${dateInfo.date}-${
+                    dateInfo.available ? "available" : "not available"
                   }`}
                   onClick={() => {
-                    if (date.available) {
-                      handleDateClick(date.date);
+                    if (dateInfo.available) {
+                      handleDateClick(dateInfo.date);
                     } else {
-                      alert(`${date.date}is not available`);
+                      window.alert(`${dateInfo.date} is not available`);
                     }
                   }}
                 >
                   <span className="text-sm font-medium text-white">
-                    {date.day_number}
+                    {dateInfo.day_number}
                   </span>
                 </button>
               );
             })}
           </div>
           <div className="mt-4">
-            {formData.arrival_date && formData.depart_date ? (
+            {formData.check_in_date && formData.check_out_date ? (
               <div className="text-center">
                 <p className="text-lg font-semibold">Selected Dates:</p>
                 <p>
-                  Check in: {formData.arrival_date} <br />
-                  Check out: {formData.depart_date}
+                  Check in: {formData.check_in_date} <br />
+                  Check out: {formData.check_out_date}
                 </p>
               </div>
             ) : (
               <p className="text-center text-gray-500">
-                Select {formData.arrival_date ? "1 more date" : "2 dates"}.
+                Select {formData.check_in_date ? "1 more date" : "2 dates"}.
               </p>
             )}
           </div>
@@ -168,8 +239,33 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
           <p className="text-lg font-semibold">No dates available</p>
         </div>
       )}
+<div className="flex flex-col">
+  <label className="mb-2 text-gray-700 font-medium">
+    Number of Guests:
+  </label>
+  <select
+          onChange={({target:{value:guest_num}})=>{ setFormData((prev)=>({
+            ...prev,
+            number_of_guests: guest_num
+          }))}}
+          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+    {[1, 2, 3, 4, 5, 6].map((num) => (
+      <option key={num} value={num}>{num}</option>
+    ))}
+  </select>
+</div>
+      <div className="mt-4">
+        <button
+          onClick={makeReservation}
+          className="rounded bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+          disabled={reservationMutation.isLoading}
+        >
+          {reservationMutation.isLoading ? "Reserving..." : "Reserve"}
+        </button>
+      </div>
     </div>
   );
 };
 
 export default AvailabilityCalendar;
+

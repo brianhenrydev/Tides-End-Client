@@ -9,10 +9,10 @@ const ProfileEditForm = ({profile,editing}) => {
         "last_name": profile.user?.last_name,
         "phone_number": profile.phone_number
     })
-    const handleInput = ({target:{id,value}}) => {
+    const handleInput = ({target:{id:key,value}}) => {
         editProfile({
             ...tempProfile,
-            [id]: value
+            [key]: value
         })
     }
     return  (
@@ -65,7 +65,7 @@ const ProfileEditForm = ({profile,editing}) => {
                         />
                     </div>
                 </div>
-                <button onClick={editing} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
+                <button onClick={()=>editing(false)} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
                 Save
               </button>
             </div>

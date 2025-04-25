@@ -18,7 +18,7 @@ export default function ProfileInfo({profile,editing}) {
                         <p><span className="font-medium text-gray-600">Phone Number:</span> {profile.phone_number}</p>
                     </div>
                 </div>
-                <button onClick={editing} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
+                <button onClick={()=> editing(true)} className="float-right mr-2 rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
                 Edit
               </button>
             </div>
