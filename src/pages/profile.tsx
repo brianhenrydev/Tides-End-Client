@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAppContext } from '../context/AppContext';
 import apiRequest from '@/lib/axios';
 import Navbar from '@/app/components/Navbar'; 
-import PaymentForm from '@/app/components/form/PaymentForm';
+import PaymentForm from '@/app/components/payment/PaymentMethodList';
 import ReservationList from '@/app/components/campsite/Reservations';
 import ProfileInfo from '@/app/components/ProfileInfo';
 import ProfileEditForm from '@/app/components/form/ProfileEditForm';

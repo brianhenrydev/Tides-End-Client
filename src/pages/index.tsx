@@ -1,5 +1,5 @@
 import React from 'react';
-import CampSiteList from "@/app/components/CampsiteList"
+import CampSiteList from "@/app/components/campsite/CampsiteList"
 import { useAppContext } from '@/context/AppContext';
 import { useQuery } from "@tanstack/react-query";
 import apiRequest from "@/lib/axios"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FormInput from "../FormInput";
+import FormInput from "../Input";
 
 const ProfileEditForm = ({profile,editing}) => {
     const [tempProfile,editProfile] = useState({

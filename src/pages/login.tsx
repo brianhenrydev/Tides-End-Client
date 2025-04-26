@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import FormInput from '../app/components/FormInput';
+import FormInput from '../app/components/Input';
 import apiRequest from '../lib/axios';
 import { useAppContext } from '../context/AppContext';
 import { useMutation } from '@tanstack/react-query';

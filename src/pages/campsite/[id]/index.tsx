@@ -3,9 +3,9 @@ import apiRequest from '@/lib/axios';
 import { useQuery } from "@tanstack/react-query";
 import { useAppContext } from '@/context/AppContext';
 import { useRouter } from 'next/router';
-import AvailabilityCalendar from '@/app/components/AvailabilityCalendar';
+import AvailabilityCalendar from '@/app/components/campsite/AvailabilityCalendar';
 import ReviewList from '@/app/components/campsite/Review';
-import ImageCarousel from '@/app/components/ImageCarousel';
+import ImageCarousel from '@/app/components/campsite/ImageCarousel';
 import Navbar from '@/app/components/Navbar';
 const SiteDetails: React.FC = () => {
     const { token } = useAppContext() as { token: string };
@@ -35,13 +35,12 @@ const SiteDetails: React.FC = () => {
         check_in_date: null,
         check_out_date: null,
         number_of_guests: null
-    
     });
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['campsite', campId, token],
         queryFn: async () => {
-            apiRequest.defaults.headers.common['Authorization'] = `Token${token}`;
+            apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
             const { data: profile } = await apiRequest.get(`campsites/${campId}`);
             return profile as Campsite;
         },
@@ -67,7 +66,12 @@ const SiteDetails: React.FC = () => {
     <div className="flex-1/3 rounded-lg border border-gray-300 bg-white p-8 shadow-lg">
       <h3 className="mb-4 text-2xl font-semibold text-gray-800">Select Your Dates</h3>
       <AvailabilityCalendar
-        siteId={campId as string}
+        price_per_night={data?.price_per_night}
+        siteInfo={{
+                id:campId,
+                price_per_night: price_per_night,
+                number_of_guests: max_occupancy
+              }}
         formData={formData}
         setFormData={setFormData}
       />
@@ -88,7 +92,7 @@ const SiteDetails: React.FC = () => {
       </div>
       
       <div className="mt-8">
-        {formData.arrival_date && formData.depart_date ? (
+        {formData.check_in_date && formData.check_out_date ? (
           <div className="rounded-lg bg-gray-100 p-4 text-center">
             <p className="text-lg font-semibold">Selected Dates:</p>
             <p>

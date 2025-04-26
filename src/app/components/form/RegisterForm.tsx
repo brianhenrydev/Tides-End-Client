@@ -1,4 +1,4 @@
-import FormInput from "../FormInput";
+import FormInput from "../Input";
 import Link from "next/link";
 
 const RegisterForm = ({ handleSubmit, handleChange, formData, error }) => {
