@@ -2,9 +2,14 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAppContext } from "../../context/AppContext";
+import { SetStateAction, Dispatch } from "react";
 
+interface AppContext {
+  token: string;
+  setToken: Dispatch<SetStateAction<string>>;
+}
 export default function Navbar() {
-  const {token, setToken } = useAppContext();
+  const {token, setToken } = useAppContext() as AppContext;
   const router = useRouter();
   
   const loggedInButtons = () => {
@@ -49,10 +54,10 @@ export default function Navbar() {
   };
 
   return (
-    <div className="mb-2 flex items-center justify-between bg-gray-800 px-4 py-2 text-white">
+    <div className="mb-2 flex items-center justify-between bg-gray-800 px-4 py-4 text-white">
       {/* Site Title */}
       <div className="text-xl font-bold">
-        <Link href="/">Tide's End</Link>
+        <Link href="/">Tide&apos;s End🌊</Link>
       </div>
 
       {/* Navigation Buttons */}

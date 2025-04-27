@@ -9,94 +9,121 @@ import ProfileInfo from '@/app/components/ProfileInfo';
 import ProfileEditForm from '@/app/components/form/ProfileEditForm';
 
 interface PaymentMethod {
-    issuer: string;
-    masked_card_number: string;
-    cardholder_name: string;
-    expiration_date: string;
-    cvv: number;
-    billing_address: string;
-    is_default: boolean;
-  }
+  issuer: string;
+  masked_card_number: string;
+  cardholder_name: string;
+  expiration_date: string;
+  cvv: number;
+  billing_address: string;
+  is_default: boolean;
+}
   
 interface Reservation {
-        id: number;
-        campsite: number;
-        check_in_date: string;
-        check_out_date: string;
-        status: string;
+  id: number;
+  campsite: number;
+  check_in_date: string;
+  check_out_date: string;
+  status: string;
 }
 
 interface Profile {
+  id: number;
+  user: {
     id: number;
-    user: {
-        id: number;
-        username: string;
-        email: string;
-        first_name: string;
-        last_name: string;
-    };
-    age: number;
-    phone_number: string;
-    payment_methods: PaymentMethod[]
-    reservation_history: Reservation[]
-    
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+  };
+  age: number;
+  phone_number: string;
+  payment_methods: PaymentMethod[];
+  reservation_history: Reservation[];
+  active_reservations: Reservation[];
 }
 
 const Profile: React.FC = () => {
-    const [isEditing, setIsEditing] = useState(false)
-    const { token } = useAppContext() as { token: string };
-    const { data: profile, isLoading, isError } = useQuery<AxiosResponse<Profile>, Error>({
-        queryKey: ['profile', token],
-        queryFn: async () => { 
-            apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
-            const {data: profile} = await apiRequest.get('auth/profile')
-            return profile;
-        },
-        enabled: !!token, // Only fetch if token exists
-        onError: (error: any) => {
-          const authRoutes = ['/login', '/register'];
-          if (!authRoutes.includes(router.pathname)) {
-            window.alert("There has been an issue retrieving your user profile.");
-          }
-        }
-      });
-        
-
-    if (isLoading) {
-        return <div>Loading...</div>;
+  const [isEditing, setIsEditing] = useState(false);
+  const { token } = useAppContext() as { token: string };
+  
+  const { data: profile, isLoading, isError } = useQuery<AxiosResponse<Profile>, Error>({
+    queryKey: ['profile', token],
+    queryFn: async () => { 
+      apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
+      const {data: profile} = await apiRequest.get('auth/profile');
+      return profile;
+    },
+    enabled: !!token, // Only fetch if token exists
+    onError: (error: any) => {
+      const authRoutes = ['/login', '/register'];
+      if (!authRoutes.includes(router.pathname)) {
+        window.alert("There has been an issue retrieving your user profile.");
+      }
     }
-    if (isError) {
-        return <div>Error loading profile</div>;
-    }
-
-    if (!isLoading && !isError && profile) {
-        console.log(profile);
+  });
+    
+  if (isLoading) {
     return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-         <div className="flex flex-wrap justify-center gap-8 lg:justify-between lg:flex-nowrap w-full max-w-6xl">
-        {isEditing ? (
-       <ProfileEditForm profile={profile} editing={setIsEditing} /> 
-        ):( 
-        <ProfileInfo profile={profile} editing={setIsEditing} />
-    )
-    }
-            </div>
-            <div className="flex flex-col space-y-8 w-full max-w-lg">
-         <PaymentForm paymentMethods={profile?.payment_methods} />
-        <ReservationList reservations={profile?.reservation_history} />
-        </div>
-    </div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-xl font-medium">Loading...</div>
+      </div>
     );
-}
+  }
+  
+  if (isError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-xl font-medium text-red-600">Error loading profile</div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Account Dashboard</h1>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+          {/* Profile section - Takes up 3/5 on large screens */}
+          <div className="lg:col-span-3">
+            {isEditing ? (
+              <ProfileEditForm profile={profile} editing={setIsEditing} />
+            ) : (
+              <ProfileInfo profile={profile} editing={setIsEditing} />
+            )}
+          </div>
+          
+          {/* Payment methods and reservations - Takes up 2/5 on large screens */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="rounded-lg bg-white p-6 shadow-md">
+              <h2 className="mb-4 text-xl font-semibold text-gray-700">Payment Methods</h2>
+              <PaymentForm paymentMethods={profile.payment_methods} />
+            </div>
+            
+            <div className="rounded-lg bg-white p-6 shadow-md">
+              <h2 className="mb-4 text-xl font-semibold text-gray-700">Your Reservations</h2>
+              <ReservationList reservations={profile.reservation_history} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 Profile.getLayout = function getLayout(page) {
-    return (
-        <div className='flex min-h-screen flex-col'>
-            <Navbar />
-            <main className='flex-grow'>{page}</main>
-        </div>
-    );
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex-grow">{page}</main>
+    </div>
+  );
 };
 
 export default Profile;

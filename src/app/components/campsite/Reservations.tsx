@@ -64,7 +64,7 @@ return (
             <p>Status: {reservation.status}</p>
             </div>
             { 
-            reservation.status === "pending" ? (
+            reservation.status !== "completed" ? (
       <Button
         onClick={cancelReservation}
         id='cancelReservation'
