@@ -27,7 +27,6 @@ interface Reservation {
 }
 
 interface Profile {
-  id: number;
   user: {
     id: number;
     username: string;
@@ -83,10 +82,9 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Account Dashboard</h1>
         </div>
         
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
@@ -100,14 +98,13 @@ const Profile: React.FC = () => {
           </div>
           
           {/* Payment methods and reservations - Takes up 2/5 on large screens */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="rounded-lg bg-white p-6 shadow-md">
+          <div className="space-y-6 lg:col-span-2">
+            <div className="rounded-lg bg-white/20 p-6 shadow-md">
               <h2 className="mb-4 text-xl font-semibold text-gray-700">Payment Methods</h2>
               <PaymentForm paymentMethods={profile.payment_methods} />
             </div>
             
-            <div className="rounded-lg bg-white p-6 shadow-md">
-              <h2 className="mb-4 text-xl font-semibold text-gray-700">Your Reservations</h2>
+            <div className="rounded-lg bg-white/20 p-6 shadow-md">
               <ReservationList reservations={profile.reservation_history} />
             </div>
           </div>

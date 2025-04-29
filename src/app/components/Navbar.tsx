@@ -9,12 +9,28 @@ interface AppContext {
   setToken: Dispatch<SetStateAction<string>>;
 }
 export default function Navbar() {
-  const {token, setToken } = useAppContext() as AppContext;
+  const {token, setToken, profile } = useAppContext() as AppContext;
   const router = useRouter();
-  
+
+  const logout = () => {
+            setToken(null);
+            localStorage.removeItem("token");
+            document.cookie = 'token=; Max-Age=0;'
+    
+            router.push("/login");
+          }  
   const loggedInButtons = () => {
     return (
       <div className="flex flex-row gap-4">
+      { profile.is_admin ?
+
+        <Link 
+        href="/admin"
+        className="rounded-md bg-blue-600 px-8 py-2 text-white hover:bg-red-500">
+            Admin Toolkit
+        </Link>
+        : ""
+      }
         <Link
           href="/profile"
           className="rounded-md bg-blue-600 px-8 py-2 text-white hover:bg-red-500"
@@ -22,11 +38,7 @@ export default function Navbar() {
           Profile
         </Link>
         <button
-          onClick={() => {
-            setToken(null);
-            localStorage.removeItem("token");
-            router.push("/login");
-          }}
+          onClick={logout}
           className="rounded-md bg-red-600 px-8 py-2 text-white hover:bg-red-500"
         >
           Logout

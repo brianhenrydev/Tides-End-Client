@@ -1,4 +1,10 @@
-const Review = ({review}) => { 
+import { ReviewInterface } from "@/app/Interfaces";
+
+interface ReviewProps {
+  review: ReviewInterface;
+}
+
+const Review: React.FC<ReviewProps> = ({review}) => { 
   return (
     <div className="mb-4 rounded-lg bg-white p-6 text-gray-800 shadow-md">
          <h2>User: {review.username}</h2>
@@ -9,8 +15,11 @@ const Review = ({review}) => {
     </div>
   );
 }
+interface ReviewListProps {
+  reviews: ReviewInterface[];
+}
 
-const ReviewList = ({ reviews }) => {
+const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
   return (
     <div className="rounded-lg bg-white p-6 text-gray-800 shadow-md">
         <h1 className="mb-6 text-center text-2xl font-bold">Reviews</h1>

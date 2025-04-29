@@ -1,15 +1,14 @@
 "use client"
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import apiRequest from '@/lib/axios';
 
 // Creates our context object.
-const AppContext = createContext();
+const AppContext = createContext({});
 
 export function AppWrapper({ children }) {
   const [profile, setProfile] = useState({});
   const [token, setToken] = useState("");
-  const router = useRouter();
   const pathname = usePathname()
 
   // Useful for when a window is closed and a user opens a new session, still logged in
@@ -25,7 +24,7 @@ export function AppWrapper({ children }) {
       try {
         const response = await apiRequest.get('auth/profile', {
           headers: {
-            Authorization: `Token${token}` // Note the space after "Token"
+            Authorization: `Token ${token}` // Note the space after "Token"
           },
         });
         return response.data;

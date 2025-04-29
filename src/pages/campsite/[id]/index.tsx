@@ -7,29 +7,34 @@ import AvailabilityCalendar from '@/app/components/campsite/AvailabilityCalendar
 import ReviewList from '@/app/components/campsite/Review';
 import ImageCarousel from '@/app/components/campsite/ImageCarousel';
 import Navbar from '@/app/components/Navbar';
+
+
+
+
+interface Review {
+     id: number;
+     text: string;
+     rating: number;
+     user: unknown;
+}
+
+interface Campsite {
+    id: number;
+    name: string;
+    description: string;
+    location: string;
+    price_per_night: number;
+    max_occupancy: number;
+    available: boolean;
+    images: string[];
+    reviews: Review[];
+}
+
 const SiteDetails: React.FC = () => {
     const { token } = useAppContext() as { token: string };
     const router = useRouter();
     const { id: campId } = router.query;
 
-    interface Review {
-        id: number;
-        text: string;
-        rating: number;
-        user: unknown;
-    }
-
-    interface Campsite {
-        id: number;
-        name: string;
-        description: string;
-        location: string;
-        price_per_night: number;
-        max_occupancy: number;
-        available: boolean;
-        images: string[];
-        reviews: Review[];
-    }
 
     const [formData, setFormData] = useState<{ check_in_date: string | null; check_out_date: string | null;number_of_guests: number | null }>({
         check_in_date: null,
@@ -40,7 +45,7 @@ const SiteDetails: React.FC = () => {
     const { data, isLoading, isError } = useQuery({
         queryKey: ['campsite', campId, token],
         queryFn: async () => {
-            apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
+            apiRequest.defaults.headers.common['Authorization'] = `Token${token}`;
             const { data: profile } = await apiRequest.get(`campsites/${campId}`);
             return profile as Campsite;
         },
@@ -78,8 +83,10 @@ const SiteDetails: React.FC = () => {
     </div>
     
     <div className="flex-1/3 rounded-lg border border-gray-300 bg-white p-8 shadow-lg">
-      <ImageCarousel images={images} altText={name} />
-      <div className="mt-4">
+      <div>
+          <ImageCarousel images={images} altText={name} />
+      </div>
+      <div className="m-4">
         {/* Campsite Details */}
         <h2 className="mb-4 text-3xl font-bold text-gray-800">{name}</h2>
         <p className="mb-6 text-lg text-gray-700">{description}</p>

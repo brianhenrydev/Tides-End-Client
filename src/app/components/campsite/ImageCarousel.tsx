@@ -1,16 +1,12 @@
 import Image from "next/image";
 import React from "react";
-import {Carousel } from "react-responsive-carousel"
-interface Image {
-    id: string;
-    image_url: string;
-}
+import { ImageInterface } from "@/app/Interfaces";
+
 
 interface ImageCarouselProps {
-    images: Image[];
+    images: ImageInterface[];
     altText: string;
 }
-
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, altText }) => {
     const [activeIndex, setActiveIndex] = React.useState(0);
 
@@ -39,21 +35,19 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, altText }) => {
         >
             <div
                 className={`flex transition-transform duration-300`}
-                style={{
-                    transform: `translateX(-${activeIndex * 100}%)`,
-                }}
             >
                 {images.map((image) => (
                     <div
                         key={image.id}
-                        className="h-full w-full flex-shrink-0 relative"
+                        className="h-full w-full flex-shrink-0"
                     >
                         <Image
-                            width={1400} // Set fixed width
-                            height={1400} // Set fixed height
+                            width={0} // Set fixed width
+                            height={0} // Set fixed height
+                            sizes="100vw"
                             src={image.image_url}
                             alt={altText}
-                            className="object-cover" // Ensure the image covers the area
+                            className="h-auto w-full"
                         />
                     </div>
                 ))}
@@ -72,15 +66,15 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, altText }) => {
             >
                 &#8250;
             </button>
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 transform space-x-2">
                 {images.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setActiveIndex(index)}
-                        className={`h-2 w-2 rounded-full ${
+                        className={`h-2 w-2 rounded-full${
                             index === activeIndex ? "bg-white" : "bg-gray-500"
                         }`}
-                        aria-label={`Go to image ${index + 1}`}
+                        aria-label={`Go to image${index + 1}`}
                     />
                 ))}
             </div>

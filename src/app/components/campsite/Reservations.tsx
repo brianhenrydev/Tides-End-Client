@@ -2,22 +2,21 @@ import React from 'react';
 import Button from '../Button';
 import apiRequest from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SiteCard } from './CampsiteList';
+import { ReservationInterface } from '@/app/Interfaces';
 
-interface Reservation {
-  id: number;
-  campsite: number;
-  check_in_date: string;
-  check_out_date: string;
-  status: string;
-}
 
 interface ReservationListProps {
-  reservations?: Reservation[];
+  reservations?: ReservationInterface[];
+}
+
+interface ReservationProps {
+  reservation: ReservationInterface;
 }
 
 const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
   return (
-    <div className="rounded-lg bg-white p-6 text-gray-800 shadow-md">
+    <div className="rounded-lg bg-black/10 p-6 text-gray-800 shadow-md">
       <h1 className="mb-6 text-center text-3xl font-bold text-gray-900">Reservations</h1>
       {reservations && reservations.length > 0 ? (
         reservations.map((reservation) => (
@@ -25,15 +24,12 @@ const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
 
         ))
       ) : (
-        <p className="text-center text-gray-600">No reservations available.</p>
+        <p className="rounded-xl bg-white/30 text-center text-gray-900">No reservations available.</p>
       )}
     </div>
   );
 };
 
-interface ReservationProps {
-  reservation: Reservation;
-}
 
 const Reservation: React.FC<ReservationProps> = ({reservation}) => {
   const queryClient = useQueryClient();
@@ -53,12 +49,15 @@ const Reservation: React.FC<ReservationProps> = ({reservation}) => {
       console.error("Error canceling reservation:", error);
     }
   });
-  const cancelReservation = () => cancelReservationMutation;
+  const cancelReservation = () => cancelReservationMutation()
  
 return (
-          <div key={reservation.id} className="mb-4 rounded-md border p-4">
+          <div key={reservation.id} className="reservation-card">
       <div>
-            <p>Campsite: {reservation.campsite}</p>
+            <SiteCard 
+            site={reservation.campsite}
+            />
+           
             <p>Check-in Date: {reservation.check_in_date}</p>
             <p>Check-out Date: {reservation.check_out_date}</p>
             <p>Status: {reservation.status}</p>
@@ -71,7 +70,7 @@ return (
         label='Cancel'
         type='button'
         name='cancelButton'
-        style=" w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+        style="w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
 
       />
             ):("")
