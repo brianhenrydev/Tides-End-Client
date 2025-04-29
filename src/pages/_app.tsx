@@ -21,7 +21,9 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     return (
         <AppWrapper>
         <QueryClientProvider client={queryClient}>
+        <div className="mt-16">
             {getLayout(<Component {...pageProps} />)}
+            </div>
             <ReactQueryDevtools initialIsOpen={false} /> {/* Add Devtools */}
         </QueryClientProvider>
         </AppWrapper>

@@ -3,12 +3,13 @@ import { useAppContext } from "@/context/AppContext";
 import { useQuery } from "@tanstack/react-query";
 import apiRequest from "@/lib/axios";
 import { useRouter } from "next/router";
+import ReserationsChart from "@/app/components/admin/ReservationsChart";
 
 function AdminDashboard() {
-  const { token } = useAppContext()
   const router = useRouter()
+  const { token } = useAppContext()
 
-  const { data: queryData, isLoading, isError, refetch } = useQuery({
+  const { data: queryData, isLoading, isError } = useQuery({
       queryKey: ['admin',"dashboard_data", token],
       queryFn: async () => {
            apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
@@ -18,7 +19,11 @@ function AdminDashboard() {
       enabled: !!token, // Only fetch if token exists
     });
   if (isLoading) {
-    return (<>loading data...</>)
+    return (
+      <div>
+        <div>loading data...</div>
+      </div>
+    )
   }
 
   if (isError) {
@@ -27,15 +32,10 @@ function AdminDashboard() {
   if (queryData) {
   return (
 <div className="flex flex-col items-center p-5">
-    <button
-        onClick={refetch}
-        className="rounded bg-blue-500 px-4 py-2 font-semibold text-white shadow transition duration-200 hover:bg-blue-600"
-    >
-        Get Fresh Data
-    </button>
+        <ReserationsChart /> 
     <div className="mt-5 w-full max-w-md">
         {queryData.links?.length > 0  ? (
-            queryData.links.map((item) => (
+            queryData.links?.map((item) => (
                 <div key={item.name} className="mb-4 rounded-lg border bg-white p-4 shadow">
                 <button
                   onClick={()=>{
