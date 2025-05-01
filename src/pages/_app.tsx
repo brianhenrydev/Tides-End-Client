@@ -29,3 +29,6 @@ export default function App({ Component, pageProps }: CustomAppProps) {
         </AppWrapper>
     );
 }
+
+
+

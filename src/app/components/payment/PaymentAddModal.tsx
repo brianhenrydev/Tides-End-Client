@@ -42,7 +42,7 @@ const PaymentMethodAddForm: React.FC = () => {
 
   const addPaymentMethodMutation = useMutation({
     mutationFn: async (paymentMethod: PaymentMethod) => {
-      apiRequest.defaults.headers.common['Authorization'] = `Token${token}`;
+      apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
       const response = await apiRequest.post('auth/profile/addpaymentmethod', paymentMethod);
       return response.data;
     },

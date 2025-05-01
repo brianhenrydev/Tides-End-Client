@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { Waves } from "lucide-react";
 import FormInput from "@/app/components/Input"
 import Link from "next/link";
 import apiRequest from "@/lib/axios";
+import Navbar from "@/app/components/Navbar";
 
 
 const Register: React.FC = () => {
@@ -172,4 +172,12 @@ const Register: React.FC = () => {
     );
 };
 
+Register.getLayout = function getLayout(page) {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className='flex-grow'>{page}</main>
+    </div>
+  );
+};
 export default Register;

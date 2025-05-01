@@ -31,9 +31,9 @@ function AdminDashboard() {
   }
   if (queryData) {
   return (
-<div className="flex flex-col items-center p-5">
+<div className="flex items-center p-5">
         <ReserationsChart /> 
-    <div className="mt-5 w-full max-w-md">
+    <div className="m-5 w-full max-w-md basis-1">
         {queryData.links?.length > 0  ? (
             queryData.links?.map((item) => (
                 <div key={item.name} className="mb-4 rounded-lg border bg-white p-4 shadow">
@@ -41,7 +41,10 @@ function AdminDashboard() {
                   onClick={()=>{
                     router.push(item.endpoint)
                   }}
-                >{item.name}</button>
+                  disabled={!item.implemented}
+                >
+                  {item.name} {item.implemented ? "" : "(Not implemented Yet)"}
+                </button>
                 </div>
             ))
         ) : (

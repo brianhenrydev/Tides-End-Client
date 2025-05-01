@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import Link from 'next/link';
 import { Waves } from "lucide-react";
+import Navbar from "@/app/components/Navbar";
 
 
 interface AppContextType {
@@ -44,7 +45,7 @@ const LoginPage: React.FC = () => {
       setToken(token);
       setProfile(data.data)
       document.cookie = `token=${token}`
-      apiRequest.defaults.headers.common['Authorization'] = `Token${token}`;
+      apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
       router.push('/'); // Redirect to home page after successful login
     },
     onError: (error: Error) => {
@@ -118,6 +119,15 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
     </>
+  );
+};
+
+LoginPage.getLayout = function getLayout(page) {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className='flex-grow'>{page}</main>
+    </div>
   );
 };
 

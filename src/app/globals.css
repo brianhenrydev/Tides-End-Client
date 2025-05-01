@@ -5,6 +5,9 @@
   html {
     @apply bg-white;
   }
+  .button {
+    @apply mt-2  rounded-md bg-blue-500 py-3 font-medium text-white transition duration-200 hover:bg-blue-600;
+  }
 
   .bg-image {
       @apply bg-[url('/background.jpg')];

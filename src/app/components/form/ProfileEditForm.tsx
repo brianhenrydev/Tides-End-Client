@@ -1,12 +1,18 @@
 import { useState } from "react";
 import FormInput from "../Input";
 import { CamperInterface } from "@/app/Interfaces";
+import { useMutation,useQueryClient } from "@tanstack/react-query";
+import { useAppContext } from "@/context/AppContext";
+import apiRequest from "@/lib/axios";
 
 interface ProfileEditFormProps {
   profile: CamperInterface;
   editing: React.Dispatch<React.SetStateAction<any>>;
 }
 const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) => {
+  const {token } = useAppContext()
+  const queryClient = useQueryClient()
+
   const [tempProfile, editProfile] = useState<CamperInterface>({
     "username": profile.user?.username,
     "email": profile.user?.email,
@@ -15,6 +21,17 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
     "phone_number": profile.phone_number
   });
 
+  const mutation = useMutation({
+      mutationFn: async () => {
+          apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
+          const { data } = await apiRequest.put('auth/profile/update', tempProfile);
+          return data;
+      },
+      onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['profile', token] });
+            console.info("Profile updated successfully!");
+        },
+    });
   const handleInput = ({ target: { id: key, value } }) => {
     editProfile({
       ...tempProfile,
@@ -22,8 +39,14 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
     });
   };
 
+  const handleUpdate = (e) => {
+      e.preventDefault();
+      mutation.mutate()
+      editing(false)
+  };
+
   return (
-    <div className="flex h-full w-full flex-col rounded-lg bg-white shadow-md">
+    <div className="flex h-auto w-full flex-col rounded-lg bg-white shadow-md">
       {/* Profile Header with Background */}
       <div className="rounded-t-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-5">
         <h1 className="text-2xl font-bold text-white">Edit Profile</h1>
@@ -39,6 +62,8 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
               <h2 className="mb-4 border-b pb-2 text-xl font-semibold text-gray-700">User Information</h2>
               <div className="grid grid-cols-1 gap-4">
                 <FormInput
+                  labelStyle="mb-2 block text-sm font-medium text-gray-700"
+                  styleClass="form-input"
                   id="username"
                   label="Username"
                   type="username"
@@ -46,6 +71,8 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
                   value={tempProfile.username}
                 />
                 <FormInput
+                  labelStyle="mb-2 block text-sm font-medium text-gray-700"
+                  styleClass="form-input"
                   id="email"
                   label="Email"
                   type="email"
@@ -60,6 +87,8 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
               <h2 className="mb-4 border-b pb-2 text-xl font-semibold text-gray-700">Contact Information</h2>
               <div className="grid grid-cols-1 gap-4">
                 <FormInput
+                  styleClass="form-input"
+                  labelStyle="mb-2 block text-sm font-medium text-gray-700"
                   id="phone_number"
                   type="phone"
                   label="Phone Number"
@@ -77,6 +106,8 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
               <h2 className="mb-4 border-b pb-2 text-xl font-semibold text-gray-700">Personal Information</h2>
               <div className="grid grid-cols-1 gap-4">
                 <FormInput
+                  labelStyle="mb-2 block text-sm font-medium text-gray-700"
+                  styleClass="form-input"
                   id="first_name"
                   label="First Name"
                   type="text"
@@ -84,7 +115,9 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
                   value={tempProfile.first_name}
                 />
                 <FormInput
+                  labelStyle="mb-2 block text-sm font-medium text-gray-700"
                   id="last_name"
+                  styleClass="form-input"
                   type="text"
                   label="Last Name"
                   onChange={handleInput}
@@ -123,7 +156,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ profile, editing }) =
             Cancel
           </button>
           <button 
-            onClick={() => editing(false)} 
+            onClick={handleUpdate} 
             className="flex items-center rounded bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

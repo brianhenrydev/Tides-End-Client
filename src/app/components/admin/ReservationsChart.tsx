@@ -30,7 +30,7 @@ export default function ReserationsChart() {
   }
   if (queryData) {
   return (
-    <div className=' flex justify-center flex-col w-full h-full'>
+    <div className='h-full w-full border'>
 
       <BarChart
         dataset={queryData}
@@ -41,12 +41,6 @@ export default function ReserationsChart() {
         series={[{ dataKey: 'reservations', label: 'Reserations',  }]}
         height={300}
       />
-    <button
-        onClick={refetch}
-        className="rounded bg-blue-500 px-4 py-2 font-semibold text-white shadow transition duration-200 hover:bg-blue-600"
-    >
-        Get Fresh Data
-    </button>
     </div>
   );
 }

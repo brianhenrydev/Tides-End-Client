@@ -2,6 +2,7 @@ import React from 'react';
 import ImageCarousel from './ImageCarousel';
 import Link from 'next/link';
 import { Campground,CampSite } from '@/app/Interfaces';
+import { formatUSD } from '@/utils/currency_formatter';
 
 interface CampsiteListProps {
     campgrounds: Campground;
@@ -53,7 +54,7 @@ export const SiteCard: React.FC<SiteCardProps> = ({
         <div className="site-card-text text-xl font-bold">Site #{site.site_number}</div>
         <p className="site-card-text h-12 truncate">{site.description}</p>
         <p className="site-card-text"><strong>Location:</strong> {site.coordinates}</p>
-        <p className="site-card-text"><strong>Price per night:</strong> ${site.price_per_night}</p>
+        <p className="site-card-text"><strong>Price per night:</strong> {formatUSD(site.price_per_night)}</p>
         <p className="site-card-text"><strong>Max Occupancy:</strong> {site.max_occupancy}</p>
         <p className="site-card-text"><strong>Available:</strong> {site.available ? 'Yes' : 'No'}</p>
  <div className='min-h-14 mt-4 flex flex-wrap gap-2 rounded-lg bg-gray-100 p-2'>

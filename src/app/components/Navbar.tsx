@@ -27,7 +27,7 @@ export default function Navbar() {
         <Link 
         href="/admin"
         className="rounded-md bg-blue-600 px-8 py-2 text-white hover:bg-red-500">
-            Admin Toolkit
+            Admin Dashboard
         </Link>
         : ""
       }

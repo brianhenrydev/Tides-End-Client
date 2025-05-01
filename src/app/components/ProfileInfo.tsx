@@ -55,8 +55,8 @@ export default function ProfileInfo({ profile, editing }) {
                 <span className="text-sm text-gray-600">Payment Methods</span>
               </div>
               <div className="rounded-lg bg-green-50 p-3 text-center">
-                <span className="block text-2xl font-bold text-green-600">{profile.reservation_history?.filter(({status})=>status === "confirmed" || "pending")?.length || 0}</span>
-                <span className="text-sm text-gray-600">Reservations</span>
+                <span className="block text-2xl font-bold text-green-600">{profile.reservation_history?.filter(({status})=>status === "completed")?.length || 0}</span>
+                <span className="text-sm text-gray-600">Past Stays</span>
               </div>
               <div className="rounded-lg bg-purple-50 p-3 text-center md:col-span-1">
                 <span className="block text-2xl font-bold text-purple-600">
