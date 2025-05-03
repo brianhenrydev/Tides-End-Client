@@ -10,7 +10,7 @@ const HomePage = () => {
     const query = useQuery({
         queryKey: ['campgrounds', token],
         queryFn: async () => { 
-            //apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
+            apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
             const {data: campsites} = await apiRequest.get('campsites')
             return campsites;
         },

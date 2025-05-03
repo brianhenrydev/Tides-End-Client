@@ -1,4 +1,4 @@
-export interface CampSite {
+export interface CampsiteInterface {
     id: number;
     site_number: string;
     description?: string;
@@ -8,10 +8,10 @@ export interface CampSite {
     available: boolean;
     created_at?: string;
     updated_at?: string;
-    amineties?: Aminety[];
+    amineties?: AminetyInterface[];
     images: ImageInterface[];
 }
-interface Aminety {
+export interface AminetyInterface {
   id: number;
   name: string;
 }
@@ -24,12 +24,12 @@ export interface ImageInterface {
 }
 
 export interface Campground {
-    campgrounds: CampSite[];
+    campgrounds: CampsiteInterface[];
 }
 
 export interface ReservationInterface {
   id: number;
-  campsite: CampSite;
+  campsite: CampsiteInterface;
   check_in_date: string;
   check_out_date: string;
   status: string;
@@ -39,7 +39,7 @@ export interface ReviewInterface {
     id: number;
     username?: string;
     camper: CamperInterface;
-    campground: CampSite;
+    campground: CampsiteInterface;
     rating?: number;
     comment?: string;
     created_at?: string;

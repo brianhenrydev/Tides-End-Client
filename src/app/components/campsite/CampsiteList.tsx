@@ -58,7 +58,8 @@ export const SiteCard: React.FC<SiteCardProps> = ({
         <p className="site-card-text"><strong>Max Occupancy:</strong> {site.max_occupancy}</p>
         <p className="site-card-text"><strong>Available:</strong> {site.available ? 'Yes' : 'No'}</p>
  <div className='min-h-14 mt-4 flex flex-wrap gap-2 rounded-lg bg-gray-100 p-2'>
-            {site.amenities.map(({ name, id }) => (
+            {
+            site.amenities.map(({ name, id }) => (
                 <div 
                     key={id}
                     className='flex items-center overflow-scroll rounded-lg border bg-blue-500/90 p-1 text-white transition duration-300 hover:bg-blue-600'
@@ -69,7 +70,9 @@ export const SiteCard: React.FC<SiteCardProps> = ({
                     </span>
                     {name}
                 </div>
-            ))}
+            )
+          )
+          }
         </div>
     </Link>
 </div>

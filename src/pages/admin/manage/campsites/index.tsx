@@ -19,6 +19,7 @@ const CampsiteManagement = () => {
         enabled: !!token, // Only fetch if token exists
     });
 
+
     if (!campsites) return null; // Early return if campsites data is not available
 
     return (
@@ -34,7 +35,7 @@ const CampsiteManagement = () => {
                         <p className="text-gray-600"><strong>Max Occupancy:</strong> {site.max_occupancy}</p>
                         
                         <button 
-                            onClick={() => router.push(`/admin/manage/campsites/${site.id}/edit`)} 
+                            onClick={() => router.push(`/admin/manage/campsites/${site.id}/edit?`)} 
                             className="button w-full mt-4 bg-blue-500 text-white rounded-lg p-2 hover:bg-blue-600 transition"
                         >
                             Edit
@@ -48,18 +49,27 @@ const CampsiteManagement = () => {
 
                         <div className="mt-2">
                             <h3 className="font-semibold">Amenities:</h3>
-                            {site.amenities?.map((a) => (
-                                <p key={a.id} className="text-gray-600">{a.name}</p>
-                            ))}
-                        </div>
+                            {site.amenities?.map(({name, id}) => (
+                      <div 
+                          key={id}
+                          className='flex items-center overflow-scroll rounded-lg border bg-blue-500/90 p-1 text-white transition duration-300 hover:bg-blue-600'
+                      >
+                          <span className="mr-1">
+                              {/* Replace with appropriate icons */}
+                              <i className={`icon-${name.toLowerCase()}`}></i> 
+                          </span>
+                          {name}
+                      </div>
+                                  ))}
+                              </div>
 
-                        <div className="mt-2">
-                            <h3 className="font-semibold">Reviews:</h3>
-                            {site.reviews?.map((r) => (
-                                <p key={r.id} className="text-gray-600">"{r.comment}" by {r.user.username}</p>
-                            ))}
-                        </div>
-                    </div>
+                              <div className="mt-2">
+                                  <h3 className="font-semibold">Reviews:</h3>
+                                  {site.reviews?.map((r) => (
+                                      <p key={r.id} className="text-gray-600">"{r.comment}" by {r.username}</p>
+                                  ))}
+                              </div>
+                          </div>
                 ))}
             </div>
         </div>

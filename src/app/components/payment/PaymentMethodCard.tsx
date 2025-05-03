@@ -1,6 +1,5 @@
 import apiRequest from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosResponse } from 'axios';
 import { useState } from "react";
 
 function PaymentMethodCard({ method }) {
@@ -25,10 +24,10 @@ function PaymentMethodCard({ method }) {
       
     },
     onError: (error) => {
-      console.error("Error adding payment method:", error);
+      console.error("Error removing payment method:", error);
     }
   });
-  const removePaymentMethod = () => removePaymentMethodMutation
+  const removePaymentMethod = () => removePaymentMethodMutation()
   
     
     const handleSubmit = async (e: React.FormEvent) => {

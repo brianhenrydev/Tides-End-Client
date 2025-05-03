@@ -9,6 +9,7 @@ import ImageCarousel from '@/app/components/campsite/ImageCarousel';
 import Navbar from '@/app/components/Navbar';
 import { ImageInterface } from '@/app/Interfaces';
 import { formatUSD } from '@/utils/currency_formatter';
+import MapButton from '@/app/components/campsite/GMapsGoToButton';
 
 interface Review {
      id: number;
@@ -32,7 +33,7 @@ interface Campsite {
 const SiteDetails: React.FC = () => {
     const { token } = useAppContext() as { token: string };
     const router = useRouter();
-    const { id: campId } = router.query;
+    const { id: siteId } = router.query;
 
     const [formData, setFormData] = useState<{ check_in_date: string | null; check_out_date: string | null; number_of_guests: number | null }>({
         check_in_date: null,
@@ -41,13 +42,13 @@ const SiteDetails: React.FC = () => {
     });
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ['campsite', campId, token],
+        queryKey: ['campsite', siteId, token],
         queryFn: async () => {
             apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
-            const { data: profile } = await apiRequest.get(`campsites/${campId}`);
+            const { data: profile } = await apiRequest.get(`campsites/${siteId}`);
             return profile as Campsite;
         },
-        enabled: !!token && !!campId, // Only fetch if token and campId exist,
+        enabled: !!token && !!siteId, // Only fetch if token and siteId exist,
     });
 
     const campsite = data as Campsite | undefined;
@@ -61,7 +62,7 @@ const SiteDetails: React.FC = () => {
     };
 
     if (campsite) {
-        const { name, description, location, price_per_night, max_occupancy, available, images, reviews } = campsite;
+        const { name, description, coordinates:location, price_per_night, max_occupancy, available, images, reviews } = campsite;
 
         return (
             <div className='flex h-full flex-col'>
@@ -72,7 +73,7 @@ const SiteDetails: React.FC = () => {
                         <AvailabilityCalendar
                             price_per_night={data?.price_per_night}
                             siteInfo={{
-                                id: campId,
+                                id: siteId,
                                 price_per_night: price_per_night,
                                 number_of_guests: max_occupancy
                             }}
@@ -112,6 +113,7 @@ const SiteDetails: React.FC = () => {
                             <p className="mb-6 text-lg text-gray-700">{description}</p>
                             <div className="space-y-2">
                                 <p className="text-gray-800"><strong>Location:</strong> {location}</p>
+                                <MapButton longitude={location.split(",")[1]} latitude={location.split(",")[0]} label='Get Directions'/>
                                 <p className="text-gray-800"><strong>Price per night:</strong> {formatUSD(price_per_night)}</p>
                                 <p className="text-gray-800"><strong>Max Occupancy:</strong> {max_occupancy}</p>
                                 <p className="text-gray-800"><strong>Available:</strong> {available ? 'Yes' : 'No'}</p>
@@ -123,7 +125,7 @@ const SiteDetails: React.FC = () => {
                 {/* Reviews Section */}
                 <div className="mt-6">
                     <div className="w-full rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
-                        <ReviewList reviews={reviews} />
+                        <ReviewList reviews={reviews} siteId={siteId}  />
                     </div>
                 </div>
             </div>
