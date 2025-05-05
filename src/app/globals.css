@@ -30,4 +30,7 @@
   .site-card-text {
     @apply text-black;
   }
+  .bg-404 {
+  @apply bg-[url('/images/island.jpg')] bg-cover bg-center h-screen;
+}
 }
