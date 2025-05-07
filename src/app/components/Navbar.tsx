@@ -67,10 +67,10 @@ export default function Navbar() {
   };
 
   return (
-    <div className="fixed p-1 top-0 left-0 z-10 w-full mb-2 flex items-center   text-white font-serif">
-    <div className="rounded-md w-full mb-2 flex items-center justify-between bg-gray-800/85 px-4 py-4 ">
+    <div className="fixed left-0 top-0 z-10 mb-2 flex w-full items-center p-1 font-serif text-white">
+    <div className="mb-2 flex w-full items-center justify-between rounded-md bg-gray-800/95 px-4 py-4">
       {/* Site Title */}
-      <div className="text-xl font-bold rounded-lg p-3 bg-gray-800/10 hover:bg-gray-800/40">
+      <div className="rounded-lg bg-gray-800/10 p-3 text-xl font-bold hover:bg-gray-800/40">
         <Link href="/"><div className="flex items-center"><div>Tide&apos;s End</div><Waves /></div></Link>
       </div>
 

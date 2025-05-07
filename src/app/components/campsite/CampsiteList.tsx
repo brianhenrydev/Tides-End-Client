@@ -1,7 +1,7 @@
-import React from 'react';
+import React  from 'react';
 import ImageCarousel from './ImageCarousel';
 import Link from 'next/link';
-import { Campground,CampSite } from '@/app/Interfaces';
+import { Campground,CampsiteInterface } from '@/app/Interfaces';
 import { formatUSD } from '@/utils/currency_formatter';
 
 interface CampsiteListProps {
@@ -9,19 +9,21 @@ interface CampsiteListProps {
 }
 
 const CampsiteList: React.FC<CampsiteListProps> = ({ campgrounds }) => {
-   
-     const { data: sites, isLoading, isError } = campgrounds
+     const { data: sites, isLoading, isError,  } = campgrounds
+  
     if (isLoading) {
         return <div>Loading...</div>;
     }
     if (isError) {
       return <div>There was an error...</div>;
   }
+  if (sites) {
             
     return (
         <div className='grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5'>
+
           {
-          sites?.map((site) => (
+          sites.map((site) => (
           <div key={site.id}>
             <SiteCard 
                 site={site}
@@ -32,13 +34,14 @@ const CampsiteList: React.FC<CampsiteListProps> = ({ campgrounds }) => {
         }
         </div>
     );
+  }
 };
 
 export default CampsiteList;
 
 
 interface SiteCardProps {
-    site: CampSite;
+    site: CampsiteInterface;
 }
 
 export const SiteCard: React.FC<SiteCardProps> = ({

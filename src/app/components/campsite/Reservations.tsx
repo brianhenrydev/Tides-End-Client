@@ -16,7 +16,7 @@ interface ReservationProps {
 
 const ReservationList: React.FC<ReservationListProps> = ({ reservations }) => {
   return (
-    <div className="rounded-lg bg-black/10 p-6 text-gray-800 shadow-md">
+    <div className="rounded-lg bg-black/02 p-6 text-gray-800 shadow-md">
       <h1 className="mb-6 text-center text-3xl font-bold text-gray-900">Reservations</h1>
       {reservations && reservations.length > 0 ? (
         reservations.map((reservation) => (

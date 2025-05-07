@@ -104,7 +104,7 @@ const Profile: React.FC = () => {
               <PaymentForm paymentMethods={profile.payment_methods} />
             </div>
             
-            <div className="rounded-lg bg-white/20 p-6 shadow-md">
+            <div className="rounded-lg bg-white/10 p-6 shadow-md">
               <ReservationList reservations={profile.reservation_history} />
             </div>
           </div>

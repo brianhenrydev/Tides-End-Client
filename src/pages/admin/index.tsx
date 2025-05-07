@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import apiRequest from "@/lib/axios";
 import { useRouter } from "next/router";
 import ReserationsChart from "@/app/components/admin/ReservationsChart";
+import { Button } from "@mui/material";
 
 function AdminDashboard() {
   const router = useRouter()
@@ -36,15 +37,14 @@ function AdminDashboard() {
     <div className="m-5 w-full max-w-md basis-1">
         {queryData.links?.length > 0  ? (
             queryData.links?.map((item) => (
-                <div key={item.name} className="mb-4 rounded-lg border bg-white p-4 shadow">
-                <button
-                  onClick={()=>{
-                    router.push(item.endpoint)
-                  }}
+              <div key={item.name} className="p-4">
+                <Button
+                  onClick={()=>{ router.push(item.endpoint) }}
+                  variant="contained" 
                   disabled={!item.implemented}
                 >
                   {item.name} {item.implemented ? "" : "(Not implemented Yet)"}
-                </button>
+                </Button>
                 </div>
             ))
         ) : (

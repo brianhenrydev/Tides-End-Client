@@ -8,10 +8,10 @@ export interface CampsiteInterface {
     available: boolean;
     created_at?: string;
     updated_at?: string;
-    amineties?: AminetyInterface[];
+    amenities?: AmenityInterface[];
     images: ImageInterface[];
 }
-export interface AminetyInterface {
+export interface AmenityInterface {
   id: number;
   name: string;
 }
