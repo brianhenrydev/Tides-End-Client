@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AmenityI } from '../Interfaces';
 
-interface Amenity {
-  id: string;
-  name: string;
-}
 
-interface FilterModalProps {
+type FilterModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  amenities: Amenity[];
+  amenities: AmenityI[];
   selectedAmenities: string[];
   setSelectedAmenities: (amenities: string[]) => void;
   buttonRef: React.RefObject<HTMLButtonElement>; // Reference to the filter button

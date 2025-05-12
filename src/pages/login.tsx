@@ -11,13 +11,14 @@ import { AxiosResponse } from 'axios';
 import Link from 'next/link';
 import { Waves } from "lucide-react";
 import Navbar from "@/app/components/Navbar";
+import { ProfileI } from "@/app/Interfaces";
 
 
-interface AppContextType {
-  profile: any;
+type AppContextType = {
+  profile: ProfileI;
   token: string;
   setToken: (token: string) => void;
-  setProfile: (profile: any) => void;
+  setProfile: (profile: ProfileI) => void;
 }
 
 const LoginPage: React.FC = () => {

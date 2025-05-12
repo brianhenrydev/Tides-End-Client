@@ -7,28 +7,11 @@ import AvailabilityCalendar from '@/app/components/campsite/AvailabilityCalendar
 import ReviewList from '@/app/components/campsite/Review';
 import ImageCarousel from '@/app/components/campsite/ImageCarousel';
 import Navbar from '@/app/components/Navbar';
-import { ImageInterface } from '@/app/Interfaces';
 import { formatUSD } from '@/utils/currency_formatter';
 import MapButton from '@/app/components/campsite/GMapsGoToButton';
+import Link from 'next/link';
+import { CampsiteI } from '@/app/Interfaces';
 
-interface Review {
-     id: number;
-     text: string;
-     rating: number;
-     user: unknown;
-}
-
-interface Campsite {
-    id: number;
-    name: string;
-    description: string;
-    location: string;
-    price_per_night: number;
-    max_occupancy: number;
-    available: boolean;
-    images: ImageInterface[];
-    reviews: Review[];
-}
 
 const SiteDetails: React.FC = () => {
     const { token } = useAppContext() as { token: string };
@@ -45,13 +28,13 @@ const SiteDetails: React.FC = () => {
         queryKey: ['campsite', siteId, token],
         queryFn: async () => {
             apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
-            const { data: profile } = await apiRequest.get(`campsites/${siteId}`);
-            return profile as Campsite;
+            const { data } = await apiRequest.get(`campsites/${siteId}`);
+            return data as CampsiteI;
         },
         enabled: !!token && !!siteId, // Only fetch if token and siteId exist,
     });
 
-    const campsite = data as Campsite | undefined;
+    const campsite = data as CampsiteI | undefined;
 
     if (isLoading) {
         return <div className="mt-10 text-center text-gray-500">Loading...</div>;
@@ -62,7 +45,7 @@ const SiteDetails: React.FC = () => {
     };
 
     if (campsite) {
-        const { name, description, coordinates:location, price_per_night, max_occupancy, available, images, reviews } = campsite;
+        const {id, site_number, description, coordinates:location, price_per_night, max_occupancy, available, images, reviews } = campsite;
 
         return (
             <div className='flex h-full flex-col'>
@@ -109,7 +92,8 @@ const SiteDetails: React.FC = () => {
                         
                         <div className="p-6">
                             {/* Campsite Details */}
-                            <h2 className="mb-4 text-3xl font-bold text-gray-800">{name}</h2>
+                            <h2 className="mb-4 text-3xl font-bold text-gray-800">{site_number}</h2>
+                            <Link href={`/campsites/${id}/edit`} className='px-3 py-2 bg-blue-500 rounded-lg'>Edit Site Info</Link>
                             <p className="mb-6 text-lg text-gray-700">{description}</p>
                             <div className="space-y-2">
                                 <p className="text-gray-800"><strong>Location:</strong> {location}</p>

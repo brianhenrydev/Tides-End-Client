@@ -100,7 +100,7 @@ const CampsiteEdit = () => {
 
   return (
     <div className="flex justify-center w-full h-full p-4">
-      <div className="border rounded-lg shadow-lg p-6 bg-white w-full max-w-md">
+      <div className="border rounded-lg shadow-lg p-6 mt-6 bg-white w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Edit Campsite</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

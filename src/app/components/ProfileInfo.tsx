@@ -1,4 +1,12 @@
-export default function ProfileInfo({ profile, editing }) {
+import { JSX } from "react";
+import { ProfileI } from "../Interfaces";
+
+type ProfileInfoProps = {
+  profile: ProfileI;
+  editing: ()=>{};
+}
+
+export default function ProfileInfo({ profile, editing }: ProfileInfoProps): JSX.Element {
     return (
       <div className="w-full rounded-lg bg-white shadow-md">
         {/* Profile Header with Background */}

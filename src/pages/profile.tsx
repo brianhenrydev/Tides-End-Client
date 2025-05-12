@@ -7,45 +7,15 @@ import PaymentForm from '@/app/components/payment/PaymentMethodList';
 import ReservationList from '@/app/components/campsite/Reservations';
 import ProfileInfo from '@/app/components/ProfileInfo';
 import ProfileEditForm from '@/app/components/form/ProfileEditForm';
+import { ProfileI } from '@/app/Interfaces';
+import { AxiosResponse } from 'axios';
 
-interface PaymentMethod {
-  issuer: string;
-  masked_card_number: string;
-  cardholder_name: string;
-  expiration_date: string;
-  cvv: number;
-  billing_address: string;
-  is_default: boolean;
-}
-  
-interface Reservation {
-  id: number;
-  campsite: number;
-  check_in_date: string;
-  check_out_date: string;
-  status: string;
-}
-
-interface Profile {
-  user: {
-    id: number;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-  };
-  age: number;
-  phone_number: string;
-  payment_methods: PaymentMethod[];
-  reservation_history: Reservation[];
-  active_reservations: Reservation[];
-}
 
 const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { token } = useAppContext() as { token: string };
   
-  const { data: profile, isLoading, isError } = useQuery<AxiosResponse<Profile>, Error>({
+  const { data: profile, isLoading, isError } = useQuery<AxiosResponse<ProfileI>, Error>({
     queryKey: ['profile', token],
     queryFn: async () => { 
       apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
@@ -100,7 +70,6 @@ const Profile: React.FC = () => {
           {/* Payment methods and reservations - Takes up 2/5 on large screens */}
           <div className="space-y-6 lg:col-span-2">
             <div className="rounded-lg bg-white/20 p-6 shadow-md">
-              <h2 className="mb-4 text-xl font-semibold text-gray-700">Payment Methods</h2>
               <PaymentForm paymentMethods={profile.payment_methods} />
             </div>
             

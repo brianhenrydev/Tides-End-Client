@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import { useRouter } from "next/router";
 import { Waves } from "lucide-react";
 import FormInput from "@/app/components/Input"
@@ -7,7 +7,7 @@ import apiRequest from "@/lib/axios";
 import Navbar from "@/app/components/Navbar";
 
 
-const Register: React.FC = () => {
+const Register: React.FC = (): JSX.Element => {
     const [formData, setFormData] = useState({
         username: "",
         email: "",

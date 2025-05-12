@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import apiRequest from "@/lib/axios";
 import Navbar from '@/app/components/Navbar';
 import FilterModal from '@/app/components/FilterModal';
-import { CampsiteInterface, AmenityInterface } from '@/app/Interfaces';
+import { CampsiteI, AmenityI } from '@/app/Interfaces';
 
 
 
@@ -34,9 +34,9 @@ const HomePage = () => {
         if (!query.data || !Array.isArray(query.data)) return [];
         
         const amenitiesSet = new Set<string>();
-        const amenitiesMap = new Map<string, AmenityInterface>();
+        const amenitiesMap = new Map<string, AmenityI>();
         
-        query.data.forEach((campsite: CampsiteInterface) => {
+        query.data.forEach((campsite: CampsiteI) => {
             if (campsite.amenities && Array.isArray(campsite.amenities)) {
                 campsite.amenities.forEach((amenity) => {
                     if (!amenitiesSet.has(amenity.id)) {
@@ -56,7 +56,7 @@ const HomePage = () => {
             return query.data;
         }
         
-        return query.data.filter((campsite: CampsiteInterface) => {
+        return query.data.filter((campsite: CampsiteI) => {
             if (!campsite.amenities || !Array.isArray(campsite.amenities)) return false;
             
             // Check if campsite has any of the selected amenities

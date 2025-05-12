@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface ButtonProps {
+type ButtonProps = {
   id: string;
   label: string;
   type: "submit" | "reset" | "button" | undefined;

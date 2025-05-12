@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 import { useAppContext } from "../../context/AppContext";
 import { SetStateAction, Dispatch } from "react";
 import { Waves } from "lucide-react";
+import { ProfileI } from "../Interfaces";
 
-interface AppContext {
+type  AppContext = {
   token: string;
-  setToken: Dispatch<SetStateAction<string>>;
+  setToken: Dispatch<SetStateAction<string|null>>;
+  profile: ProfileI;
 }
 export default function Navbar() {
   const {token, setToken, profile } = useAppContext() as AppContext;

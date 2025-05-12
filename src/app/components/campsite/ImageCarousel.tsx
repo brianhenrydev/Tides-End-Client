@@ -1,8 +1,8 @@
 import React from "react";
-import { ImageInterface } from "@/app/Interfaces";
+import { ImageI} from "@/app/Interfaces";
 
-interface ImageCarouselProps {
-  images: ImageInterface[];
+type ImageCarouselProps = {
+  images: ImageI[];
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {

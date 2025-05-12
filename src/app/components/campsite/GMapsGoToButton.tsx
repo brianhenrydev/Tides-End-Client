@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface MapButtonProps {
+type MapButtonProps = {
     latitude: number;
     longitude: number;
     label: string;

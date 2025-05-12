@@ -1,15 +1,19 @@
 import React  from 'react';
 import ImageCarousel from './ImageCarousel';
 import Link from 'next/link';
-import { Campground,CampsiteInterface } from '@/app/Interfaces';
+import { CampsiteI} from '@/app/Interfaces';
 import { formatUSD } from '@/utils/currency_formatter';
 
-interface CampsiteListProps {
-    campgrounds: Campground;
+type CampsiteListProps = {
+    campgrounds: {
+    data: CampsiteI;
+    isLoading: boolean;
+    isError: boolean;
+  }
 }
 
 const CampsiteList: React.FC<CampsiteListProps> = ({ campgrounds }) => {
-     const { data: sites, isLoading, isError,  } = campgrounds
+     const { data: sites, isLoading, isError,  } = campgrounds;
   
     if (isLoading) {
         return <div>Loading...</div>;
@@ -40,8 +44,8 @@ const CampsiteList: React.FC<CampsiteListProps> = ({ campgrounds }) => {
 export default CampsiteList;
 
 
-interface SiteCardProps {
-    site: CampsiteInterface;
+type SiteCardProps = {
+    site: CampsiteI;
 }
 
 export const SiteCard: React.FC<SiteCardProps> = ({

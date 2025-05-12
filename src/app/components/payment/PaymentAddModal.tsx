@@ -4,11 +4,11 @@ import apiRequest from "@/lib/axios";
 import { PaymentMethod } from "./PaymentMethodList";
 import { useAppContext } from "@/context/AppContext";
 
-interface ValidationErrors {
+type ValidationErrors = {
   [key: string]: string;
 }
 
-interface BillingAddressFields {
+type BillingAddressFields = {
   street: string;
   city: string;
   state: string;

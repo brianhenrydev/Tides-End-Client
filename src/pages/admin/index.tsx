@@ -10,8 +10,18 @@ function AdminDashboard() {
   const router = useRouter()
   const { token } = useAppContext()
 
-  const { data: queryData, isLoading, isError } = useQuery({
-      queryKey: ['admin',"dashboard_data", token],
+  const reservationsQuery = useQuery({
+      queryKey: ['admin',"reservations_chart_data", token],
+      queryFn: async () => {
+           apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
+           const { data } = await apiRequest.get('reports/reservations');
+           return data;
+      },
+      enabled: !!token, // Only fetch if token exists
+    });
+
+  const { data: dashboardData, isLoading, isError } = useQuery({
+      queryKey: ['admin',"dashboardData", token],
       queryFn: async () => {
            apiRequest.defaults.headers.common['Authorization'] = `Token ${token}`;
            const { data } = await apiRequest.get('reports');
@@ -19,6 +29,7 @@ function AdminDashboard() {
       },
       enabled: !!token, // Only fetch if token exists
     });
+
   if (isLoading) {
     return (
       <div>
@@ -28,15 +39,15 @@ function AdminDashboard() {
   }
 
   if (isError) {
-    return (<>failed to fetch data...</>)
+    return (<div>failed to fetch data...</div>)
   }
-  if (queryData) {
+  if (dashboardData) {
   return (
 <div className="flex items-center p-5">
-        <ReserationsChart /> 
+        <ReserationsChart query={reservationsQuery} /> 
     <div className="m-5 w-full max-w-md basis-1">
-        {queryData.links?.length > 0  ? (
-            queryData.links?.map((item) => (
+        {dashboardData.links?.length > 0  ? (
+            dashboardData.links?.map((item) => (
               <div key={item.name} className="p-4">
                 <Button
                   onClick={()=>{ router.push(item.endpoint) }}

@@ -4,25 +4,25 @@ import { useAppContext } from "../../../context/AppContext";
 import apiRequest from "../../../lib/axios";
 import { formatUSD } from "@/utils/currency_formatter";
 
-interface DateInfo {
+type DateInfo =  {
   date: string;
   available: boolean;
   day_number: number;
 }
 
-interface FormData {
+type FormData = {
   check_in_date: string | null;
   check_out_date: string | null;
   number_of_guests: number;
 }
 
-interface SiteInfo {
+type SiteInfo = {
   id: string;
   price_per_night: number;
   number_of_guests: number;
 }
 
-interface AvailabilityCalendarProps {
+type AvailabilityCalendarProps = {
   siteInfo: SiteInfo;
   formData: FormData;
   setFormData: Dispatch<SetStateAction<FormData>>;
